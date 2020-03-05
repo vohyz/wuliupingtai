@@ -1,0 +1,158 @@
+{% block title %}
+<title>运单追踪</title>{% endblock title %} {% extends 'base.html' %}
+<style>
+    .btn-group ul li:hover {
+        background: rgb(192, 192, 192);
+    }
+    
+    .btn-group ul li {
+        cursor: pointer;
+    }
+</style>
+{% block navbar %}
+<div class="headlist " style="background-color:rgb(240, 240, 240);height:10%; ">
+</div> {% endblock navbar %} {% block content %}
+<div class="maincontent" style="background-color:rgb(240, 240, 240);height:83%;width:100%;">
+    <div class="userdetails" style="background-color: #fff;height:20%;width:60%;margin:0 auto;margin-bottom:1%;min-width: 500px;padding: 30px;">
+
+        <p>{{Data.user_name}}</p>
+
+        <div style="float:right;width:80%">
+            <div class="btn-group">
+                <button type="button" class="btn dropdown-toggle" style="float:left;" data-toggle="dropdown">
+                    编辑个人地址<span class="caret"></span>
+                </button>
+                <button type="button" class="btn btn-info" style="margin-left:5px;float:left;" onclick="getinput(1)">
+                    添加新地址
+                </button>
+                <input id="address" backholder="请输入修改后的地址或新地址" style="margin-left:5px;height:34px;float:left;width:300px;display:none">
+                <button type="button" id="change" class="btn btn-success" style="margin-left:5px;float:left;display:none" onclick="submitchange()">
+                    提交
+                </button>
+                <button type="button" id="add" class="btn btn-success" style="margin-left:5px;float:left;display:none" onclick="submitadd()">
+                    提交
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    {% for place in Data.address[1:] %}
+                    <li class="address" onclick="getinput('{{place[0]}}')">
+                        {{place[0]}}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <p>{{Data.user_phone}}</p>
+        <a href="/logout"><span class="glyphicon glyphicon-log-out"></span>退出登录</a>
+
+    </div>
+    <div class="content" id="home" style="height:77%;padding-top:10px;padding-right:20px;padding-left:20px;">
+        <span style="font-size:24px;">我的订单</span>
+        <div class="ordershow1" style="margin-top:1%;width:100%;height: 98%;overflow-y: scroll;
+        scrollbar-face-color: #889B9F;
+        scrollbar-shadow-color: #3D5054;
+        scrollbar-highlight-color: #C3D6DA;
+        scrollbar-3dlight-color: #3D5054;
+        scrollbar-darkshadow-color: #85989C;
+        scrollbar-track-color: #95A6AA;">
+            {% if Data %} {% if Data.error_message == '0' %} {% for order in Data.orders %}
+            <div class="orderbox" style="width:45%;margin-left:2.5%;float:left;padding:0;position:relative;">
+                <button type="button" class="btn btn-danger" style="float:right;position:absolute;right:15px;top:18px;z-index:9999;" onclick="deleteorder('{{order.order_id}}')">删除</button>
+                <div style="width:100%;height:100%;position:relative;top:-20px;" onclick="window.open('/order/{{order.order_id}}','_self')">
+                    <div class="col-md-6 col-sm-6 col-xs-6">订单号：{{order.order_id}}</div>
+                    <div class="col-md-6 col-sm-6 col-xs-6" style="text-align:right;margin-bottom:30px;">{{order.begin_time_1}}</div>
+                    <hr>
+
+                    <div class="ordercity col-md-6 col-sm-6 col-xs-6">{{order.begin_city}}</div>
+                    <div class="ordercity col-md-6 col-sm-6 col-xs-6" style="text-align:right">{{order.end_city}}</div>
+                    <div class="col-md-4 col-sm-4 col-xs-4">{{order.begin_name}}</div>
+                    <div class="orderright col-md-4 col-sm-4 col-xs-4" style="text-align:center">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        <span class="glyphicon glyphicon-chevron-right"></span></div>
+                    <div class="col-md-4 col-sm-4 col-xs-4" style="text-align:right">{{order.end_name}}</div>
+                    <div class="col-md-12 col-sm-12 col-xs-12" style="color:rgb(161, 161, 161);text-align:right;">{{order.order_state}}</div>
+                </div>
+            </div>
+            {% endfor %} {% else %}
+            <div class="col-md-6 col-sm-6 col-xs-6">{{Data.error_message}}</div>
+            {% endif %} {% endif %}
+        </div>
+    </div>
+</div>
+<script>
+    function verify3() {
+        var correctcode = $('#ordertext').val();
+        var p1 = /^\d{6}$/
+        if (p1.test(correctcode) == false) {
+            alert('请填写正确订单号!!');
+            document.getElementById('ordertext').value = '';
+            return false;
+        }
+        return true;
+    }
+    var Place = ''
+
+    function getinput(place) {
+        if (place != 1) {
+            $('#address').val(place);
+            Place = place
+            $('#change').show();
+        } else {
+            $('#add').show();
+        }
+        $('#address').show();
+    }
+
+    function submitchange() {
+        a = $('#address').val();
+        var params = {
+            'newaddress': a,
+            'oldaddress': Place
+        }
+        $.ajax({
+            url: '/changeaddress',
+            type: 'post',
+            data: JSON.stringify(params),
+            contentType: 'application/json',
+            success: function(resp) {
+                alert(resp.errmsg);
+                location.reload();
+            }
+        });
+    }
+
+    function submitadd() {
+        a = $('#address').val();
+        var params = {
+            'address': a,
+        }
+        $.ajax({
+            url: '/addaddress',
+            type: 'post',
+            data: JSON.stringify(params),
+            contentType: 'application/json',
+            success: function(resp) {
+                alert(resp.errmsg);
+                location.reload();
+            }
+        });
+    }
+
+    function deleteorder(order_id) {
+        var params = {
+            'order_id': order_id,
+        }
+        $.ajax({
+            url: '/delete',
+            type: 'post',
+            data: JSON.stringify(params),
+            contentType: 'application/json',
+            success: function(resp) {
+                location.reload();
+            }
+        });
+    }
+</script>
+{% endblock content %}

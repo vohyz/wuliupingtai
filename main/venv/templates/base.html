@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="/js/myactive.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" media="screen" /> {% block title %} {% endblock title %}
+    <style>
+        .headnav {
+            width: 50%;
+            height: 100%;
+            min-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .headnav>li {
+            float: left;
+            width: 33%;
+            height: 100%;
+            list-style-type: none;
+            text-align: center;
+        }
+        
+        .headnav>li>a {
+            display: block;
+            width: 90%;
+            height: 100%;
+            padding: 25px;
+            color: #fff;
+            opacity: .4;
+        }
+        
+        .headnav>li>a:hover {
+            background-color: rgb(28, 134, 255);
+            opacity: 1;
+            border-bottom: rgb(28, 134, 255) 1px solid;
+        }
+        
+        .headnav>li>a:focus {
+            background-color: rgb(28, 134, 255);
+            opacity: 1;
+            border-bottom: rgb(28, 134, 255) 1px solid;
+        }
+        
+        .content {
+            height: 100%;
+            width: 60%;
+            min-width: 500px;
+            padding: 30px;
+            padding-left: 70px;
+            padding-right: 70px;
+            background: #fff;
+            margin: 0 auto;
+        }
+        
+        .ordertitle {
+            height: 70px;
+            width: 100%;
+        }
+        
+        .ordertitle>p {
+            opacity: .7;
+            font-size: 12px;
+        }
+        
+        .createbox {
+            margin-top: 40px;
+            position: unset;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bigblack" style="display:none;position:absolute;left:0;top:0;width:100%;height:100%;background-color: rgb(0, 0, 0, .4);z-index:999;"></div>
+    <div class="flexbox" id="loginbox"></div>
+    <div class="top" style="height:7%;width:100%;background:#fff;">
+        <div class="container" style="width:80%;margin:auto;border:0;height:100%;min-width:500px;">
+            <div style="float:left;height:100%;">
+                <div style="float:left;height:60%;margin-top:15px;"><img src="/image/logo.png" style="height:100%;margin-right:30px;"><a href="/index">首页</a></div>
+
+            </div>
+            <div style="float:right;margin-right:50px;height:100%;">
+                {% if session['userphone'] %}
+                <div class="headuser">
+                    欢迎 {{session['userphone']}} <a href='/usercenter'>个人中心<span class="glyphicon glyphicon-chevron-right"></span></a>
+                </div> {% endif %}{% if not session['userphone'] %}
+                <div class="headlogin " onclick="ajaxload() ">
+                    登录 <span>/</span> 快速注册
+                </div>
+                {% endif %}
+            </div>
+            <div style="float:right;margin-right:50px;height:100%; ">
+                <img src="/image/top-background.png " style="height:100%; ">
+            </div>
+
+        </div>
+    </div>
+    {% block navbar %}
+    <div class="headlist " style="background-color:#333;height:10%; ">
+        <ul id="navTab " class="headnav ">
+            <li class="active ">
+                <a href="/create ">
+                我要寄件
+            </a>
+            </li>
+            <li><a href="/search ">运单追踪</a></li>
+            <li><a href="/city ">网点查询</a></li>
+        </ul>
+    </div>
+    {% endblock navbar %} {% block content %} {% endblock content %}
+
+</body>
+
+</html>

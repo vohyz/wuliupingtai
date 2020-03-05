@@ -1,0 +1,30 @@
+ {% extends 'base.html' %} {% block title %}
+<title>物流</title>{% endblock title %} {% block navbar %} {% endblock navbar %} {% block content %}
+<div class="container1">
+    <div class="headtext">
+        <h2 class="word"><strong>同嘉物流</strong></h2>
+    </div>
+    <div class="headlist">
+        <ul class="mynav">
+            <a href="/search">
+                <li class="active" data-toggle="collapse" data-target="#demo">运单追踪</li>
+            </a>
+            <a href="/create">
+                <li>我要寄件</li>
+            </a>
+            <a href="/city">
+                <li>服务网点查询</li>
+            </a>
+            {% if session['userphone'] %}
+            <a href="/usercenter">
+                <li style="background-image: none;">个人中心</li>
+            </a> {% endif %}{% if not session['userphone'] %}
+
+            <li style="background-image: none;cursor:pointer;" onclick="ajaxload() ">个人中心</li>
+
+            {% endif %}
+
+        </ul>
+    </div>
+</div>
+{% endblock content %}
